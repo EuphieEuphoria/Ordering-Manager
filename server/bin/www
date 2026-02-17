@@ -1,0 +1,136 @@
+/**
+ * @file Executable entrypoint for the web application
+ * @author Lukas Courtney <lccourtney@ksu.edu>
+ */
+
+// import libraries
+import http from 'http';
+
+// Import Express Application
+import app from '../app.js';
+
+// Import configurations
+import database from '../configs/database.js';
+import logger from '../configs/logger.js';
+import migrations from '../configs/migrations.js';
+import seeds from '../configs/seeds.js';
+import { startupSnapshot } from 'v8';
+
+// Get port from environment and store in Express.
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+// Create HTTP server.
+var server = http.createServer(app);
+
+// Attach Event Handlers
+server.on('error', onError);
+server.on('listening', onListening);
+
+// Call starup function
+startup();
+
+/**
+ * Server startup function
+ */
+function startup() {
+  try {
+    // Test database connection
+    database.authenticate().then(() => {
+      logger.debug("Database connection successful");
+      // Run migrations
+      migrations.up().then(() => {
+        logger.debug("Database Migrations complete");
+        if(process.env.SEED_DATA ==='true') {
+          logger.warn("Database data seeding is enabled!")
+          // Run seeds
+          seeds.up().then(() => {
+            logger.debug("Database seeding complete")
+            // Listen on port
+            server.listen(port);
+          })
+        } else {
+          // Listen on port
+          server.listen(port);
+        }
+      })
+
+    });
+
+    
+
+    
+
+   
+
+  } catch (error) {
+    logger.error(error);
+  }
+}
+
+
+
+
+/**
+ * Normalize a port into a number, string, or false.
+ * 
+ * @param {(string|number)} val - a value represenging a port to connect to
+ * @returns {(string|number|boolean)} - the port or `false`
+ */
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ * 
+ * @param {Error} error - the HTTP "error" event
+ * @throws error if the error cannot be determined
+ */
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      logger.error(new Error(bind + ' requires elevated privileges'));
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      logger.error(new Error(bind + ' is already in use'));
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  logger.debug('Listening on ' + bind);
+}

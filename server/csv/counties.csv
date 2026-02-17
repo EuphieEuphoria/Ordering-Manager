@@ -1,0 +1,106 @@
+id,name,code,seat,population,est_year
+1,Allen,AL,Iola,"12,464",1855
+2,Anderson,AN,Garnett,"7,778",1855
+3,Atchison,AT,Atchison,"16,239",1855
+4,Barber,BA,Medicine Lodge,"4,110",1867
+5,Barton,BT,Great Bend,"25,216",1867
+6,Bourbon,BB,Fort Scott,"14,323",1855
+7,Brown,BR,Hiawatha,"9,455",1855
+8,Butler,BU,El Dorado,"67,889",1855
+9,Chase,CS,Cottonwood Falls,"2,598",1859
+10,Chautauqua,CQ,Sedan,"3,395",1875
+11,Cherokee,CK,Columbus,"19,130",1855
+12,Cheyenne,CN,Saint Francis,"2,633",1873
+13,Clark,CA,Ashland,"1,977",1885
+14,Clay,CY,Clay Center,"8,077",1857
+15,Cloud,CD,Concordia,"8,928",1866
+16,Coffey,CF,Burlington,"8,338",1855
+17,Comanche,CM,Coldwater,"1,670",1867
+18,Cowley,CL,Winfield,"34,496",1867
+19,Crawford,CR,Girard,"39,110",1867
+20,Decatur,DC,Oberlin,"2,751",1873
+21,Dickinson,DK,Abilene,"18,459",1857
+22,Doniphan,DP,Troy,"7,471",1855
+23,Douglas,DG,Lawrence,"119,363",1855
+24,Edwards,ED,Kinsley,"2,832",1874
+25,Elk,EK,Howard,"2,441",1875
+26,Ellis,EL,Hays,"28,790",1867
+27,Ellsworth,EW,Ellsworth,"6,336",1867
+28,Finney,FI,Garden City,"38,107",1883
+29,Ford,FO,Dodge City,"34,159",1867
+30,Franklin,FR,Ottawa,"25,986",1855
+31,Geary,GE,Junction City,"35,934",1855
+32,Gove,GO,Gove City,"2,755",1868
+33,Graham,GH,Hill City,"2,400",1867
+34,Grant,GT,Ulysses,"7,324",1888
+35,Gray,GY,Cimarron,"5,644",1887
+36,Greeley,GL,Tribune,"1,304",1873
+37,Greenwood,GW,Eureka,"5,939",1855
+38,Hamilton,HM,Syracuse,"2,484",1873
+39,Harper,HP,Anthony,"5,331",1867
+40,Harvey,HV,Newton,"33,817",1872
+41,Haskell,HS,Sublette,"3,668",1887
+42,Hodgeman,HG,Jetmore,"1,710",1867
+43,Jackson,JA,Holton,"13,261",1855
+44,Jefferson,JF,Oskaloosa,"18,411",1855
+45,Jewell,JW,Mankato,"2,937",1867
+46,Johnson,JO,Olathe,"613,219",1855
+47,Kearny,KE,Lakin,"3,891",1887
+48,Kingman,KM,Kingman,"7,392",1872
+49,Kiowa,KW,Greensburg,"2,392",1886
+50,Labette,LB,Oswego,"19,912",1867
+51,Lane,LE,Dighton,"1,565",1873
+52,Leavenworth,LV,Leavenworth,"82,184",1855
+53,Lincoln,LC,Lincoln,"2,903",1867
+54,Linn,LN,Mound City,"9,747",1855
+55,Logan,LG,Oakley,"2,722",1888
+56,Lyon,LY,Emporia,"31,998",1855
+57,Marion,MN,Marion,"11,712",1860
+58,Marshall,MS,Marysville,"9,979",1855
+59,McPherson,MP,McPherson,"30,146",1867
+60,Meade,ME,Meade,"4,022",1885
+61,Miami,MI,Paola,"34,593",1855
+62,Mitchell,MC,Beloit,"5,748",1867
+63,Montgomery,MG,Independence,"31,156",1867
+64,Morris,MR,Council Grove,"5,356",1855
+65,Morton,MT,Elkhart,"2,692",1886
+66,Nemaha,NM,Seneca,"10,216",1855
+67,Neosho,NO,Erie,"15,784",1855
+68,Ness,NS,Ness City,"2,672",1867
+69,Norton,NT,Norton,"5,342",1867
+70,Osage,OS,Lyndon,"15,768",1855
+71,Osborne,OB,Osborne,"3,498",1867
+72,Ottawa,OT,Minneapolis,"5,838",1860
+73,Pawnee,PN,Larned,"6,225",1867
+74,Phillips,PL,Phillipsburg,"4,815",1867
+75,Pottawatomie,PT,Westmoreland,"25,790",1857
+76,Pratt,PR,Pratt,"9,181",1867
+77,Rawlins,RA,Atwood,"2,549",1873
+78,Reno,RN,Hutchinson,"61,414",1867
+79,Republic,RP,Belleville,"4,662",1868
+80,Rice,RC,Lyons,"9,390",1867
+81,Riley,RL,Manhattan,"72,208",1855
+82,Rooks,RO,Stockton,"4,831",1867
+83,Rush,RH,La Crosse,"2,953",1867
+84,Russell,RS,Russell,"6,703",1867
+85,Saline,SA,Salina,"53,888",1860
+86,Scott,SC,Scott City,"5,131",1873
+87,Sedgwick,SG,Wichita,"523,828",1867
+88,Seward,SW,Liberal,"21,747",1873
+89,Shawnee,SN,Topeka,"178,264",1855
+90,Sheridan,SD,Hoxie,"2,478",1873
+91,Sherman,SH,Goodland,"5,895",1873
+92,Smith,SM,Smith Center,"3,576",1867
+93,Stafford,SF,Saint John,"4,034",1867
+94,Stanton,ST,Johnson City,"2,044",1887
+95,Stevens,SV,Hugoton,"5,293",1886
+96,Sumner,SU,Wellington,"22,385",1867
+97,Thomas,TH,Colby,"7,877",1873
+98,Trego,TR,WaKeeney,"2,793",1867
+99,Wabaunsee,WB,Alma,"6,966",1855
+100,Wallace,WA,Sharon Springs,"1,508",1868
+101,Washington,WS,Washington,"5,511",1857
+102,Wichita,WH,Leoti,"2,082",1873
+103,Wilson,WL,Fredonia,"8,526",1855
+104,Woodson,WO,Yates Center,"3,102",1855
+105,Wyandotte,WY,Kansas City,"167,046",1859

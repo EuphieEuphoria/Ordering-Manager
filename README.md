@@ -1,2 +1,5 @@
-# Ordering-Manager
-DAS 496 Capstone
+# rest-api
+
+## DEPLOYMENT INSTRUCTIONS
+
+* Copy `server/.env.example` to `server/.env` and modify as needed

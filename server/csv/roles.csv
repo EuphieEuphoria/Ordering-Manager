@@ -1,0 +1,8 @@
+id,role
+1,manage_users
+2,manage_documents
+3,add_documents
+4,manage_communities
+5,add_communities
+6,view_documents
+7,view_communities
