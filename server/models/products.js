@@ -16,6 +16,7 @@ const ProductSchema = {
   productName: {
     type: Sequelize.STRING,
     allowNull: false,
+    unique: "composite test :)"
   },
   size: {
     type: Sequelize.FLOAT,

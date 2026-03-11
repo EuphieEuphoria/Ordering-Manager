@@ -20,6 +20,7 @@ const ProductMovementSchema = {
     references: { model: "Movement", key: "id" },
     onDelete: "cascade",
   },
+  //amountChanged
 };
 
 export default ProductMovementSchema;

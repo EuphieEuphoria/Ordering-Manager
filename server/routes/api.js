@@ -25,6 +25,7 @@ import usersRouter from "./api/v1/users.js";
 
 import productRouter from "./api/v1/products.js";
 import productCountRouter from "./api/v1/product_counts.js";
+import logger from "../configs/logger.js";
 
 // Create Express router
 const router = express.Router();
@@ -69,7 +70,8 @@ router.get("/", function (req, res, next) {
 });
 
 // Use Token Middleware
-router.use(tokenMiddleware);
+// router.use(tokenMiddleware);
+logger.error("AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER ")
 
 // Use v1 routers after API route
 router.use("/v1/roles", rolesRouter);
