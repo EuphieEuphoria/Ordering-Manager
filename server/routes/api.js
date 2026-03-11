@@ -18,10 +18,13 @@ import tokenMiddleware from "../middlewares/token.js";
 // Import v1 routers
 import rolesRouter from "./api/v1/roles.js";
 import usersRouter from "./api/v1/users.js";
-import countiesRouter from "./api/v1/counties.js";
-import communitiesRouter from "./api/v1/communities.js";
-import documentsRouter from "./api/v1/documents.js";
-import metadataRouter from "./api/v1/metadata.js";
+// import countiesRouter from "./api/v1/counties.js";
+// import communitiesRouter from "./api/v1/communities.js";
+// import documentsRouter from "./api/v1/documents.js";
+// import metadataRouter from "./api/v1/metadata.js";
+
+import productRouter from "./api/v1/products.js";
+import productCountRouter from "./api/v1/product_counts.js";
 
 // Create Express router
 const router = express.Router();
@@ -71,9 +74,12 @@ router.use(tokenMiddleware);
 // Use v1 routers after API route
 router.use("/v1/roles", rolesRouter);
 router.use("/v1/users", usersRouter);
-router.use("/v1/counties", countiesRouter);
-router.use("/v1/communities", communitiesRouter);
-router.use("/v1/documents", documentsRouter);
-router.use("/v1/metadata", metadataRouter);
+//router.use("/v1/counties", countiesRouter);
+//router.use("/v1/communities", communitiesRouter);
+//router.use("/v1/documents", documentsRouter);
+//router.use("/v1/metadata", metadataRouter);
+
+router.use("/v1/products", productRouter);
+router.use("/v1/productcounts", productCountRouter);
 
 export default router;
