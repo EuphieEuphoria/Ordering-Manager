@@ -1,29 +1,29 @@
 /**
- * @file Products Router
+ * @file Product types router
  * @author Lukas Courtney <lccourtney@ksu.edu>
- * @exports router an Express Router
+ * @exports router an Express router
  *
  * @swagger
  * tags:
- *   name: products
- *   description: Products Routes
+ *   name: product_types
+ *   description: Product types Routes
  */
 
 // Import libraries
 import express from "express";
 import { ValidationError } from "sequelize";
 
-// Create Express Router
+// Create Express router
 const router = express.Router();
 
 // Import models
-import { Product, ProductCount, ProductType } from "../../../models/models.js";
-
-// Import logger
-import logger from "../../../configs/logger.js";
+import { ProductType } from "../../../models/models.js";
 
 // Import database
 import database from "../../../configs/database.js";
+
+// Import logger
+import logger from "../../../configs/logger.js";
 
 // Import middlewares
 import roleBasedAuth from "../../../middlewares/authorized-roles.js";
@@ -32,52 +32,37 @@ import roleBasedAuth from "../../../middlewares/authorized-roles.js";
 import handleValidationError from "../../../utilities/handle-validation-error.js";
 import sendSuccess from "../../../utilities/send-success.js";
 
-// Add Role Authorization to all routes
-router.use(roleBasedAuth("manage_users"));
 
 /**
- * Gets the list of products
+ * Gets the list of product_types
  *
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @param {Function} next - Express next middleware function
  *
  * @swagger
- * /api/v1/products:
+ * /api/v1/product_types:
  *   get:
- *     summary: products list page
- *     description: gets the list of all products in the application
- *     tags: [products]
+ *     summary: product_types list page
+ *     description: Gets the list of all product_types in the application
+ *     tags: [product_types]
  *     security:
  *       - bearerAuth:
  *         - 'manage_users'
  *     responses:
  *       200:
- *         description: A list of products
+ *         description: the list of product_types
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Product'
+ *                 $ref: '#/components/schemas/ProductType'
  */
-router.get("/", async function (req, res, next) {
+router.get("/", roleBasedAuth("manage_users"), async function (req, res, next) {
   try {
-    const products = await Product.findAll({
-      include: [
-        {
-          model: ProductCount,
-          as: "product_counts",
-          attributes: ["id", "quantity"],
-        },
-        {
-          model: ProductType,
-          as: "product_types",
-          attributes: ["id", "type"],
-        },
-      ],
-    });
-    res.json(products);
+    const product_types = await ProductType.findAll();
+    res.json(product_types);
   } catch (error) {
     logger.error(error);
     res.status(500).end();
@@ -85,18 +70,18 @@ router.get("/", async function (req, res, next) {
 });
 
 /**
- * Gets a single product by ID
+ * Gets a single product_type by ID
  *
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @param {Function} next - Express next middleware function
  *
  * @swagger
- * /api/v1/products/{id}:
+ * /api/v1/product_types/{id}:
  *   get:
- *     summary: get single product
- *     description: Gets a single product from the application
- *     tags: [products]
+ *     summary: get single product_type
+ *     description: Gets a single product_type from the application
+ *     tags: [product_types]
  *     security:
  *       - bearerAuth:
  *         - 'manage_users'
@@ -106,71 +91,54 @@ router.get("/", async function (req, res, next) {
  *         required: true
  *         schema:
  *           type: integer
- *         description: product ID
+ *         description: product_type ID
  *     responses:
  *       200:
- *         description: a product
+ *         description: a product_type
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Product'
+ *               $ref: '#/components/schemas/ProductType'
  */
 router.get("/:id", async function (req, res, next) {
-  try {
-    const product = await Product.findByPk(req.params.id, {
-      include: [
-        {
-          model: ProductCount,
-          as: "product_counts",
-          attributes: ["id", "quantity"],
-        },
-        {
-          model: ProductType,
-          as: "product_types",
-          attributes: ["id", "type"],
-        },
-      ],
-    });
-    // if the product is not found, return an HTTP 404 not found status code
-    if (product === null) {
-      res.status(404).end();
-    } else {
-      res.json(product);
+    try {
+        const productType = await ProductType.findByPk(req.params.id, {});
+        if (productType === null) {
+            res.status(404).end();
+        } else {
+            res.json(productType);
+        }
+
+    } catch (error) {
+        logger.error(error);
+        res.status(500).end();
     }
-  } catch (error) {
-    logger.error(error);
-    res.status(500).end();
-  }
 });
 
 /**
- * Create a Product
+ * Create a ProductType
  *
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @param {Function} next - Express next middleware function
  *
  * @swagger
- * /api/v1/products:
+ * /api/v1/product_types:
  *   post:
- *     summary: create product
- *     tags: [products]
+ *     summary: create product_type
+ *     tags: [product_types]
  *     security:
  *       - bearerAuth:
  *         - 'manage_users'
  *     requestBody:
- *       description: product
+ *       description: product_type
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Product'
+ *             $ref: '#/components/schemas/ProductType'
  *           example:
- *             supplierId: 0
- *             typeId: 1
- *             sizeId: 2
- *             caseSize: 10
- *             description: Test Product from price chopper, 1%, 32oz
+ *             type: Test Milk Type
  *     responses:
  *       201:
  *         $ref: '#/components/responses/Success'
@@ -181,14 +149,10 @@ router.post("/", async function (req, res, next) {
   try {
     // Use a database transaction to roll back if any errors are thrown
     await database.transaction(async (t) => {
-      const product = await Product.create(
-        // Build the product object using body attributes
+      const product_type = await ProductType.create(
+        // Build the product_type object using body attributes
         {
-          supplierId: req.body.supplierId,
-          typeId: req.body.typeId,
-          sizeId: req.body.sizeId,
-          caseSize: req.body.caseSize,
-          description: req.body.description,
+          type: req.body.type
         },
         // Assign to a database transaction
         {
@@ -196,18 +160,8 @@ router.post("/", async function (req, res, next) {
         },
       );
 
-      await ProductCount.create(
-        {
-          productId: product.id,
-          quantity: 0,
-        },
-        {
-          transaction: t,
-        },
-      );
-
       // Send the success message
-      sendSuccess("Product saved!", product.id, 201, res);
+      sendSuccess("ProductType saved!", product_type.id, 201, res);
     });
   } catch (error) {
     if (error instanceof ValidationError) {
@@ -220,17 +174,17 @@ router.post("/", async function (req, res, next) {
 });
 
 /**
- * Update a product
+ * Update a product_type
  *
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @param {Function} next - Express next middleware function
  *
  * @swagger
- * /api/v1/products/{id}:
+ * /api/v1/product_types/{id}:
  *   put:
- *     summary: update product
- *     tags: [products]
+ *     summary: update product_type
+ *     tags: [product_types]
  *     security:
  *       - bearerAuth:
  *         - 'manage_users'
@@ -240,20 +194,16 @@ router.post("/", async function (req, res, next) {
  *         required: true
  *         schema:
  *           type: integer
- *         description: product ID
+ *         description: product_type ID
  *     requestBody:
- *       description: product
+ *       description: product_type
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Product'
+ *             $ref: '#/components/schemas/ProductType'
  *           example:
- *             supplierId: 0
- *             typeId: 1
- *             sizeId: 2
- *             caseSize: 10
- *             description: Updated Product from price chopper, 1%, 32oz
+ *             type: Updated Milk Type
  *     responses:
  *       201:
  *         $ref: '#/components/responses/Success'
@@ -262,21 +212,17 @@ router.post("/", async function (req, res, next) {
  */
 router.put("/:id", async function (req, res, next) {
   try {
-    const product = await Product.findByPk(req.params.id);
+    const product_type = await ProductType.findByPk(req.params.id);
 
-    // if the product is not found, return an HTTP 404 not found status code
-    if (product === null) {
+    // if the product_type is not found, return an HTTP 404 not found status code
+    if (product_type === null) {
       res.status(404).end();
     } else {
       await database.transaction(async (t) => {
-        await product.update(
-          // Update the product object using body attributes
+        await product_type.update(
+          // Update the product_type object using body attributes
           {
-            supplierId: req.body.supplierId,
-            typeId: req.body.typeId,
-            sizeId: req.body.sizeId,
-            caseSize: req.body.caseSize,
-            description: req.body.description,
+            type: req.body.type,
           },
           // Assign to a database transaction
           {
@@ -285,7 +231,7 @@ router.put("/:id", async function (req, res, next) {
         );
 
         // Send the success message
-        sendSuccess("Product saved!", product.id, 201, res);
+        sendSuccess("ProductType saved!", product_type.id, 201, res);
       });
     }
   } catch (error) {
@@ -299,17 +245,17 @@ router.put("/:id", async function (req, res, next) {
 });
 
 /**
- * Delete a product
+ * Delete a product_type
  *
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @param {Function} next - Express next middleware function
  *
  * @swagger
- * /api/v1/products/{id}:
+ * /api/v1/product_types/{id}:
  *   delete:
- *     summary: delete product
- *     tags: [products]
+ *     summary: delete product_type
+ *     tags: [product_types]
  *     security:
  *       - bearerAuth:
  *         - 'manage_users'
@@ -319,23 +265,23 @@ router.put("/:id", async function (req, res, next) {
  *         required: true
  *         schema:
  *           type: integer
- *         description: product ID
+ *         description: product_type ID
  *     responses:
  *       200:
  *         $ref: '#/components/responses/Success'
  */
 router.delete("/:id", async function (req, res, next) {
   try {
-    const product = await Product.findByPk(req.params.id);
+    const product_type = await ProductType.findByPk(req.params.id);
 
-    // if the product is not found, return an HTTP 404 not found status code
-    if (product === null) {
+    // if the product_type is not found, return an HTTP 404 not found status code
+    if (product_type === null) {
       res.status(404).end();
     } else {
-      await product.destroy();
+      await product_type.destroy();
 
       // Send the success message
-      sendSuccess("Product deleted!", req.params.id, 200, res);
+      sendSuccess("ProductType deleted!", req.params.id, 200, res);
     }
   } catch (error) {
     console.log(error);

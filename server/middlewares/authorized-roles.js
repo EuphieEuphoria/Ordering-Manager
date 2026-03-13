@@ -15,7 +15,9 @@ import logger from "../configs/logger.js";
  */
 const roleBasedAuth = (...roles) => {
   return function roleAuthMiddleware(req, res, next) {
-    logger.error("------------------------------ROLE BASED AUTH IS DISABLED------------------------------")
+    logger.error(
+      "------------------------------ROLE BASED AUTH IS DISABLED------------------------------",
+    );
     roles;
     return next();
     // logger.debug("Route requires roles: " + roles);

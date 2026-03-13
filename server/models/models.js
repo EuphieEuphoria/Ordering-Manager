@@ -213,11 +213,22 @@ const ProductMovement = database.define(
 Role.belongsToMany(User, { through: UserRole, unique: false, as: "users" });
 User.belongsToMany(Role, { through: UserRole, unique: false, as: "roles" });
 
-Product.belongsToMany(Movement, { through: ProductMovement, unique: false, as: "movements" });
-Movement.belongsToMany(Product, { through: ProductMovement, unique: false, as: "products" });
+Product.belongsToMany(Movement, {
+  through: ProductMovement,
+  unique: false,
+  as: "movements",
+});
+Movement.belongsToMany(Product, {
+  through: ProductMovement,
+  unique: false,
+  as: "products",
+});
 
 Product.hasOne(ProductCount, { foreignKey: "productId", as: "product_counts" });
 ProductCount.belongsTo(Product, { foreignKey: "productId", as: "product" });
+
+Product.belongsTo(ProductType, { foreignKey: "typeId", as: "product_types" });
+ProductType.hasMany(Product, { foreignKey: "typeId", as: "products" });
 
 // Metadata.belongsToMany(Document, {
 //   through: MetadataDocument,

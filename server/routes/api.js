@@ -13,19 +13,16 @@
 import express from "express";
 
 // Import middleware
-import tokenMiddleware from "../middlewares/token.js";
+//import tokenMiddleware from "../middlewares/token.js";
+
+//import logger
+import logger from "../configs/logger.js";
 
 // Import v1 routers
 import rolesRouter from "./api/v1/roles.js";
 import usersRouter from "./api/v1/users.js";
-// import countiesRouter from "./api/v1/counties.js";
-// import communitiesRouter from "./api/v1/communities.js";
-// import documentsRouter from "./api/v1/documents.js";
-// import metadataRouter from "./api/v1/metadata.js";
-
 import productRouter from "./api/v1/products.js";
-import productCountRouter from "./api/v1/product_counts.js";
-import logger from "../configs/logger.js";
+import productTypesRouter from "./api/v1/productTypes.js"
 
 // Create Express router
 const router = express.Router();
@@ -71,17 +68,13 @@ router.get("/", function (req, res, next) {
 
 // Use Token Middleware
 // router.use(tokenMiddleware);
-logger.error("AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER ")
+logger.error(
+  "AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER ",
+);
 
 // Use v1 routers after API route
 router.use("/v1/roles", rolesRouter);
 router.use("/v1/users", usersRouter);
-//router.use("/v1/counties", countiesRouter);
-//router.use("/v1/communities", communitiesRouter);
-//router.use("/v1/documents", documentsRouter);
-//router.use("/v1/metadata", metadataRouter);
-
 router.use("/v1/products", productRouter);
-router.use("/v1/productcounts", productCountRouter);
-
+router.use("/v1/product_types", productTypesRouter);
 export default router;
