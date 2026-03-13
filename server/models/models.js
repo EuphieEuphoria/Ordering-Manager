@@ -19,13 +19,8 @@ import database from "../configs/database.js";
 import UserSchema from "./users.js";
 import RoleSchema from "./roles.js";
 import UserRoleSchema from "./user_role.js";
-// import CommunitySchema from "./communities.js";
-// import CountySchema from "./counties.js";
-// import DocumentSchema from "./documents.js";
-// import MetadataSchema from "./metadata.js";
-// import MetadataDocumentSchema from "./metadata_documents.js";
-// import MetadataCommunitySchema from "./metadata_communities.js";
 
+// NEW SCHEMAS
 import ProductSchema from "./products.js";
 import ProductTypeSchema from "./product_types.js";
 import ProductCountSchema from "./product_counts.js";
@@ -221,6 +216,9 @@ User.belongsToMany(Role, { through: UserRole, unique: false, as: "roles" });
 Product.belongsToMany(Movement, { through: ProductMovement, unique: false, as: "movements" });
 Movement.belongsToMany(Product, { through: ProductMovement, unique: false, as: "products" });
 
+Product.hasOne(ProductCount, { foreignKey: "productId", as: "product_counts" });
+ProductCount.belongsTo(Product, { foreignKey: "productId", as: "product" });
+
 // Metadata.belongsToMany(Document, {
 //   through: MetadataDocument,
 //   unique: false,
@@ -263,12 +261,7 @@ export {
   User,
   Role,
   UserRole,
-  // Community,
-  // County,
-  // Document,
-  // Metadata,
-  // MetadataCommunity,
-  // MetadataDocument,
+  // NEW EXPORTS
   Product,
   ProductType,
   ProductCount,

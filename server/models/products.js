@@ -13,18 +13,28 @@ const ProductSchema = {
     primaryKey: true,
     autoIncrement: true,
   },
-  productName: {
-    type: Sequelize.STRING,
-    allowNull: false,
-    unique: "composite test :)"
+  supplierId: { 
+    type:Sequelize.INTEGER, 
+    allowNull: false, 
+    unique: "productComposite" 
   },
-  size: {
-    type: Sequelize.FLOAT,
-    allowNull: false,
+  typeId: { 
+    type:Sequelize.INTEGER, 
+    allowNull: false, 
+    unique: "productComposite", 
+  },
+  sizeId: { 
+    type:Sequelize.INTEGER, 
+    allowNull: false, 
+    unique: "productComposite", 
   },
   caseSize: {
     type: Sequelize.INTEGER,
     allowNull: false,
+  },
+  description: {
+    type: Sequelize.STRING,
+    allowNull: true,
   },
   createdAt: {
     type: Sequelize.DATE,

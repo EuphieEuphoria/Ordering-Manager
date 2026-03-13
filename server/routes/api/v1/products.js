@@ -17,7 +17,7 @@ import { ValidationError } from "sequelize";
 const router = express.Router();
 
 // Import models
-import { Product } from "../../../models/models.js";
+import { Product, ProductCount } from "../../../models/models.js";
 
 // Import logger
 import logger from "../../../configs/logger.js";
@@ -63,7 +63,13 @@ router.use(roleBasedAuth("manage_users"));
  */
 router.get("/", async function (req, res, next) {
   try {
-    const products = await Product.findAll({});
+    const products = await Product.findAll({
+      include: {
+        model: ProductCount,
+        as: "product_counts",
+        attributes: ["quantity"],
+      }
+    });
     res.json(products);
   } catch (error) {
     logger.error(error);
@@ -104,7 +110,13 @@ router.get("/", async function (req, res, next) {
  */
 router.get("/:id", async function (req, res, next) {
   try {
-    const product = await Product.findByPk(req.params.id, {});
+    const product = await Product.findByPk(req.params.id, {
+      include: {
+        model: ProductCount,
+        as: "product_counts",
+        attributes: ["quantity"],
+      }
+    });
     // if the product is not found, return an HTTP 404 not found status code
     if (product === null) {
       res.status(404).end();
@@ -140,9 +152,11 @@ router.get("/:id", async function (req, res, next) {
  *           schema:
  *             $ref: '#/components/schemas/Product'
  *           example:
- *             productName: newProduct
- *             size: 64
- *             caseSize: 9
+ *             supplierId: 0
+ *             typeId: 1
+ *             sizeId: 2
+ *             caseSize: 10
+ *             description: Test Product from price chopper, 1%, 32oz
  *     responses:
  *       201:
  *         $ref: '#/components/responses/Success'
@@ -156,11 +170,23 @@ router.post("/", async function (req, res, next) {
       const product = await Product.create(
         // Build the product object using body attributes
         {
-          productName: req.body.productName,
-          size: req.body.size,
+          supplierId: req.body.supplierId,
+          typeId: req.body.typeId,
+          sizeId: req.body.sizeId,
           caseSize: req.body.caseSize,
+          description: req.body.description,
         },
         // Assign to a database transaction
+        {
+          transaction: t,
+        },
+      );
+
+      await ProductCount.create(
+        {
+          productId: product.id,
+          quantity: 0,
+        },
         {
           transaction: t,
         },
@@ -209,9 +235,11 @@ router.post("/", async function (req, res, next) {
  *           schema:
  *             $ref: '#/components/schemas/Product'
  *           example:
- *             productName: updatedProduct
- *             size: 32
- *             caseSize: 99
+ *             supplierId: 0
+ *             typeId: 1
+ *             sizeId: 2
+ *             caseSize: 10
+ *             description: Updated Product from price chopper, 1%, 32oz
  *     responses:
  *       201:
  *         $ref: '#/components/responses/Success'
@@ -230,9 +258,11 @@ router.put("/:id", async function (req, res, next) {
         await product.update(
           // Update the product object using body attributes
           {
-            productName: req.body.productName,
-            size: req.body.size,
-            caseSize: req.body.caseSize,
+          supplierId: req.body.supplierId,
+          typeId: req.body.typeId,
+          sizeId: req.body.sizeId,
+          caseSize: req.body.caseSize,
+          description: req.body.description,
           },
           // Assign to a database transaction
           {
