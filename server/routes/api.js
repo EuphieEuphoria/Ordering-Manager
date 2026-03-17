@@ -22,7 +22,9 @@ import logger from "../configs/logger.js";
 import rolesRouter from "./api/v1/roles.js";
 import usersRouter from "./api/v1/users.js";
 import productRouter from "./api/v1/products.js";
-import productTypesRouter from "./api/v1/productTypes.js"
+import productTypesRouter from "./api/v1/productTypes.js";
+import productSizeRouter from "./api/v1/productSizes.js";
+import supplierRouter from "./api/v1/suppliers.js";
 
 // Create Express router
 const router = express.Router();
@@ -77,4 +79,6 @@ router.use("/v1/roles", rolesRouter);
 router.use("/v1/users", usersRouter);
 router.use("/v1/products", productRouter);
 router.use("/v1/product_types", productTypesRouter);
+router.use("/v1/product_sizes", productSizeRouter);
+router.use("/v1/suppliers", supplierRouter)
 export default router;

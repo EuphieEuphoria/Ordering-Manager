@@ -1,29 +1,29 @@
 /**
- * @file Products Router
+ * @file Suppliers router
  * @author Lukas Courtney <lccourtney@ksu.edu>
- * @exports router an Express Router
+ * @exports router an Express router
  *
  * @swagger
  * tags:
- *   name: products
- *   description: Products Routes
+ *   name: suppliers
+ *   description: Suppliers Routes
  */
 
 // Import libraries
 import express from "express";
 import { ValidationError } from "sequelize";
 
-// Create Express Router
+// Create Express router
 const router = express.Router();
 
 // Import models
-import { Product, ProductCount, ProductSize, ProductType, Supplier } from "../../../models/models.js";
-
-// Import logger
-import logger from "../../../configs/logger.js";
+import { Product, Supplier } from "../../../models/models.js";
 
 // Import database
 import database from "../../../configs/database.js";
+
+// Import logger
+import logger from "../../../configs/logger.js";
 
 // Import middlewares
 import roleBasedAuth from "../../../middlewares/authorized-roles.js";
@@ -32,62 +32,36 @@ import roleBasedAuth from "../../../middlewares/authorized-roles.js";
 import handleValidationError from "../../../utilities/handle-validation-error.js";
 import sendSuccess from "../../../utilities/send-success.js";
 
-// Add Role Authorization to all routes
-router.use(roleBasedAuth("manage_users"));
-
 /**
- * Gets the list of products
+ * Gets the list of suppliers
  *
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @param {Function} next - Express next middleware function
  *
  * @swagger
- * /api/v1/products:
+ * /api/v1/suppliers:
  *   get:
- *     summary: products list page
- *     description: gets the list of all products in the application
- *     tags: [products]
+ *     summary: suppliers list page
+ *     description: Gets the list of all suppliers in the application
+ *     tags: [suppliers]
  *     security:
  *       - bearerAuth:
  *         - 'manage_users'
  *     responses:
  *       200:
- *         description: A list of products
+ *         description: the list of suppliers
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Product'
+ *                 $ref: '#/components/schemas/Supplier'
  */
-router.get("/", async function (req, res, next) {
+router.get("/", roleBasedAuth("manage_users"), async function (req, res, next) {
   try {
-    const products = await Product.findAll({
-      include: [
-        {
-          model: ProductCount,
-          as: "product_counts",
-          attributes: ["id", "quantity"],
-        },
-        {
-          model: ProductType,
-          as: "product_types",
-          attributes: ["id", "type"],
-        },
-        {
-          model: ProductSize,
-          as: "product_sizes",
-          attributes: ["id", "ounces", "commonName"],
-        },
-        {
-          model: Supplier,
-          as: "suppliers",
-          attributes: ["id", "name"],
-        },
-      ],
-    });
-    res.json(products);
+    const suppliers = await Supplier.findAll();
+    res.json(suppliers);
   } catch (error) {
     logger.error(error);
     res.status(500).end();
@@ -95,18 +69,18 @@ router.get("/", async function (req, res, next) {
 });
 
 /**
- * Gets a single product by ID
+ * Gets a single supplier by ID
  *
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @param {Function} next - Express next middleware function
  *
  * @swagger
- * /api/v1/products/{id}:
+ * /api/v1/suppliers/{id}:
  *   get:
- *     summary: get single product
- *     description: Gets a single product from the application
- *     tags: [products]
+ *     summary: get single supplier
+ *     description: Gets a single supplier from the application
+ *     tags: [suppliers]
  *     security:
  *       - bearerAuth:
  *         - 'manage_users'
@@ -116,46 +90,22 @@ router.get("/", async function (req, res, next) {
  *         required: true
  *         schema:
  *           type: integer
- *         description: product ID
+ *         description: supplier ID
  *     responses:
  *       200:
- *         description: a product
+ *         description: a supplier
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Product'
+ *               $ref: '#/components/schemas/Supplier'
  */
 router.get("/:id", async function (req, res, next) {
   try {
-    const product = await Product.findByPk(req.params.id, {
-      include: [
-        {
-          model: ProductCount,
-          as: "product_counts",
-          attributes: ["id", "quantity"],
-        },
-        {
-          model: ProductType,
-          as: "product_types",
-          attributes: ["id", "type"],
-        },
-        {
-          model: ProductSize,
-          as: "product_sizes",
-          attributes: ["id", "ounces", "commonName"],
-        },
-        {
-          model: Supplier,
-          as: "suppliers",
-          attributes: ["id", "name"],
-        },
-      ],
-    });
-    // if the product is not found, return an HTTP 404 not found status code
-    if (product === null) {
+    const productType = await Supplier.findByPk(req.params.id, {});
+    if (productType === null) {
       res.status(404).end();
     } else {
-      res.json(product);
+      res.json(productType);
     }
   } catch (error) {
     logger.error(error);
@@ -164,33 +114,31 @@ router.get("/:id", async function (req, res, next) {
 });
 
 /**
- * Create a Product
+ * Create a Supplier
  *
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @param {Function} next - Express next middleware function
  *
  * @swagger
- * /api/v1/products:
+ * /api/v1/suppliers:
  *   post:
- *     summary: create product
- *     tags: [products]
+ *     summary: create supplier
+ *     tags: [suppliers]
  *     security:
  *       - bearerAuth:
  *         - 'manage_users'
  *     requestBody:
- *       description: product
+ *       description: supplier
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Product'
+ *             $ref: '#/components/schemas/Supplier'
  *           example:
- *             supplierId: 0
- *             typeId: 1
- *             sizeId: 2
- *             caseSize: 10
- *             description: Test Product from price chopper, 1%, 32oz
+ *             name: created Supplier
+ *             address: created address
+ *             description: Created description
  *     responses:
  *       201:
  *         $ref: '#/components/responses/Success'
@@ -201,14 +149,12 @@ router.post("/", async function (req, res, next) {
   try {
     // Use a database transaction to roll back if any errors are thrown
     await database.transaction(async (t) => {
-      const product = await Product.create(
-        // Build the product object using body attributes
+      const supplier = await Supplier.create(
+        // Build the supplier object using body attributes
         {
-          supplierId: req.body.supplierId,
-          typeId: req.body.typeId,
-          sizeId: req.body.sizeId,
-          caseSize: req.body.caseSize,
-          description: req.body.description,
+          name: req.body.name,
+          address: req.body.address,
+          description: req.body.description
         },
         // Assign to a database transaction
         {
@@ -216,18 +162,8 @@ router.post("/", async function (req, res, next) {
         },
       );
 
-      await ProductCount.create(
-        {
-          productId: product.id,
-          quantity: 0,
-        },
-        {
-          transaction: t,
-        },
-      );
-
       // Send the success message
-      sendSuccess("Product saved!", product.id, 201, res);
+      sendSuccess("Supplier saved!", supplier.id, 201, res);
     });
   } catch (error) {
     if (error instanceof ValidationError) {
@@ -240,17 +176,17 @@ router.post("/", async function (req, res, next) {
 });
 
 /**
- * Update a product
+ * Update a supplier
  *
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @param {Function} next - Express next middleware function
  *
  * @swagger
- * /api/v1/products/{id}:
+ * /api/v1/suppliers/{id}:
  *   put:
- *     summary: update product
- *     tags: [products]
+ *     summary: update supplier
+ *     tags: [suppliers]
  *     security:
  *       - bearerAuth:
  *         - 'manage_users'
@@ -260,20 +196,18 @@ router.post("/", async function (req, res, next) {
  *         required: true
  *         schema:
  *           type: integer
- *         description: product ID
+ *         description: supplier ID
  *     requestBody:
- *       description: product
+ *       description: supplier
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Product'
+ *             $ref: '#/components/schemas/Supplier'
  *           example:
- *             supplierId: 0
- *             typeId: 1
- *             sizeId: 2
- *             caseSize: 10
- *             description: Updated Product from price chopper, 1%, 32oz
+ *             name: updated Supplier
+ *             address: updated address
+ *             description: updated description
  *     responses:
  *       201:
  *         $ref: '#/components/responses/Success'
@@ -282,21 +216,19 @@ router.post("/", async function (req, res, next) {
  */
 router.put("/:id", async function (req, res, next) {
   try {
-    const product = await Product.findByPk(req.params.id);
+    const supplier = await Supplier.findByPk(req.params.id);
 
-    // if the product is not found, return an HTTP 404 not found status code
-    if (product === null) {
+    // if the supplier is not found, return an HTTP 404 not found status code
+    if (supplier === null) {
       res.status(404).end();
     } else {
       await database.transaction(async (t) => {
-        await product.update(
-          // Update the product object using body attributes
+        await supplier.update(
+          // Update the supplier object using body attributes
           {
-            supplierId: req.body.supplierId,
-            typeId: req.body.typeId,
-            sizeId: req.body.sizeId,
-            caseSize: req.body.caseSize,
-            description: req.body.description,
+            name: req.body.name,
+            address: req.body.address,
+            description: req.body.description
           },
           // Assign to a database transaction
           {
@@ -305,7 +237,7 @@ router.put("/:id", async function (req, res, next) {
         );
 
         // Send the success message
-        sendSuccess("Product saved!", product.id, 201, res);
+        sendSuccess("Supplier saved!", supplier.id, 201, res);
       });
     }
   } catch (error) {
@@ -319,17 +251,17 @@ router.put("/:id", async function (req, res, next) {
 });
 
 /**
- * Delete a product
+ * Delete a supplier
  *
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @param {Function} next - Express next middleware function
  *
  * @swagger
- * /api/v1/products/{id}:
+ * /api/v1/suppliers/{id}:
  *   delete:
- *     summary: delete product
- *     tags: [products]
+ *     summary: delete supplier
+ *     tags: [suppliers]
  *     security:
  *       - bearerAuth:
  *         - 'manage_users'
@@ -339,26 +271,78 @@ router.put("/:id", async function (req, res, next) {
  *         required: true
  *         schema:
  *           type: integer
- *         description: product ID
+ *         description: supplier ID
  *     responses:
  *       200:
  *         $ref: '#/components/responses/Success'
  */
 router.delete("/:id", async function (req, res, next) {
   try {
-    const product = await Product.findByPk(req.params.id);
+    const supplier = await Supplier.findByPk(req.params.id);
 
-    // if the product is not found, return an HTTP 404 not found status code
-    if (product === null) {
+    // if the supplier is not found, return an HTTP 404 not found status code
+    if (supplier === null) {
       res.status(404).end();
     } else {
-      await product.destroy();
+      await supplier.destroy();
 
       // Send the success message
-      sendSuccess("Product deleted!", req.params.id, 200, res);
+      sendSuccess("Supplier deleted!", req.params.id, 200, res);
     }
   } catch (error) {
     console.log(error);
+    logger.error(error);
+    res.status(500).end();
+  }
+});
+
+/**
+ * Get a List of products by supplier
+ *
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ *
+ * @swagger
+ * /api/v1/suppliers/{id}/products:
+ *   get:
+ *     summary: get single supplier
+ *     description: Gets a single supplier from the application
+ *     tags: [suppliers]
+ *     security:
+ *       - bearerAuth:
+ *         - 'manage_users'
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: supplier ID
+ *     responses:
+ *       200:
+ *         description: a supplier
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Supplier'
+ */
+router.get("/:id/products", async function (req, res, next) {
+  try {
+    const products = await Supplier.findByPk(req.params.id, {
+      include: [
+        {
+          model: Product,
+          as: "products",
+          where: {
+            supplierId: req.params.id
+          },
+          attributes: ["id", "description"],
+        },
+      ],
+    });
+    res.json(products);
+  } catch (error) {
     logger.error(error);
     res.status(500).end();
   }

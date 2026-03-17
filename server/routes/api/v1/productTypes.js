@@ -32,7 +32,6 @@ import roleBasedAuth from "../../../middlewares/authorized-roles.js";
 import handleValidationError from "../../../utilities/handle-validation-error.js";
 import sendSuccess from "../../../utilities/send-success.js";
 
-
 /**
  * Gets the list of product_types
  *
@@ -101,18 +100,17 @@ router.get("/", roleBasedAuth("manage_users"), async function (req, res, next) {
  *               $ref: '#/components/schemas/ProductType'
  */
 router.get("/:id", async function (req, res, next) {
-    try {
-        const productType = await ProductType.findByPk(req.params.id, {});
-        if (productType === null) {
-            res.status(404).end();
-        } else {
-            res.json(productType);
-        }
-
-    } catch (error) {
-        logger.error(error);
-        res.status(500).end();
+  try {
+    const productType = await ProductType.findByPk(req.params.id, {});
+    if (productType === null) {
+      res.status(404).end();
+    } else {
+      res.json(productType);
     }
+  } catch (error) {
+    logger.error(error);
+    res.status(500).end();
+  }
 });
 
 /**
@@ -152,7 +150,7 @@ router.post("/", async function (req, res, next) {
       const product_type = await ProductType.create(
         // Build the product_type object using body attributes
         {
-          type: req.body.type
+          type: req.body.type,
         },
         // Assign to a database transaction
         {

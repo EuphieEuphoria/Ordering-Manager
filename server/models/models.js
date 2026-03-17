@@ -27,6 +27,8 @@ import ProductCountSchema from "./product_counts.js";
 import MovementSchema from "./movements.js";
 import ProductMovementSchema from "./product_movement.js";
 import MovementTypeSchema from "./movement_types.js";
+import ProductSizeSchema from "./product_sizes.js";
+import SupplierSchema from "./suppliers.js";
 
 // Create User model
 const User = database.define(
@@ -198,6 +200,17 @@ const ProductType = database.define(
   },
 );
 
+const ProductSize = database.define(
+  //Model Name
+  "ProductSize",
+  //Schema
+  ProductSizeSchema,
+  //Other Options
+  {
+    tableName: "product_sizes",
+  },
+);
+
 const ProductMovement = database.define(
   //Model Name
   "ProductMovement",
@@ -208,6 +221,17 @@ const ProductMovement = database.define(
     tableName: "product_movements",
   },
 );
+
+const Supplier = database.define(
+  //Model Name
+  "Supplier",
+  //Schema
+  SupplierSchema,
+  //Other options
+  {
+    tableName: "suppliers"
+  }
+)
 
 // Define Associations
 Role.belongsToMany(User, { through: UserRole, unique: false, as: "users" });
@@ -229,6 +253,12 @@ ProductCount.belongsTo(Product, { foreignKey: "productId", as: "product" });
 
 Product.belongsTo(ProductType, { foreignKey: "typeId", as: "product_types" });
 ProductType.hasMany(Product, { foreignKey: "typeId", as: "products" });
+
+Product.belongsTo(ProductSize, { foreignKey: "sizeId", as: "product_sizes" });
+ProductSize.hasMany(Product, { foreignKey: "sizeId", as: "products" });
+
+Product.belongsTo(Supplier, { foreignKey: "supplierId", as: "suppliers" });
+Supplier.hasMany(Product, { foreignKey: "supplierId", as: "products"});
 
 // Metadata.belongsToMany(Document, {
 //   through: MetadataDocument,
@@ -275,8 +305,10 @@ export {
   // NEW EXPORTS
   Product,
   ProductType,
+  ProductSize,
   ProductCount,
   Movement,
   MovementType,
   ProductMovement,
+  Supplier,
 };
