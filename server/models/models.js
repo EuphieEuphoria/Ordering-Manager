@@ -229,23 +229,29 @@ const Supplier = database.define(
   SupplierSchema,
   //Other options
   {
-    tableName: "suppliers"
-  }
-)
+    tableName: "suppliers",
+  },
+);
 
 // Define Associations
 Role.belongsToMany(User, { through: UserRole, unique: false, as: "users" });
 User.belongsToMany(Role, { through: UserRole, unique: false, as: "roles" });
 
-Product.belongsToMany(Movement, {
-  through: ProductMovement,
-  unique: false,
-  as: "movements",
+ProductMovement.belongsTo(Product, { foreignKey: "productID", as: "product" });
+
+ProductMovement.belongsTo(Movement, {
+  foreignKey: "movementID",
+  as: "movement",
 });
-Movement.belongsToMany(Product, {
-  through: ProductMovement,
-  unique: false,
-  as: "products",
+
+Product.hasMany(ProductMovement, {
+  foreignKey: "productID",
+  as: "product_movements",
+});
+
+Movement.hasMany(ProductMovement, {
+  foreignKey: "movementID",
+  as: "product_movements",
 });
 
 Product.hasOne(ProductCount, { foreignKey: "productId", as: "product_counts" });
@@ -258,7 +264,16 @@ Product.belongsTo(ProductSize, { foreignKey: "sizeId", as: "product_sizes" });
 ProductSize.hasMany(Product, { foreignKey: "sizeId", as: "products" });
 
 Product.belongsTo(Supplier, { foreignKey: "supplierId", as: "suppliers" });
-Supplier.hasMany(Product, { foreignKey: "supplierId", as: "products"});
+Supplier.hasMany(Product, { foreignKey: "supplierId", as: "products" });
+
+ProductMovement.belongsTo(MovementType, {
+  foreignKey: "movementType",
+  as: "movement_types",
+});
+MovementType.hasMany(ProductMovement, {
+  foreignKey: "movementType",
+  as: "product_movements",
+});
 
 // Metadata.belongsToMany(Document, {
 //   through: MetadataDocument,

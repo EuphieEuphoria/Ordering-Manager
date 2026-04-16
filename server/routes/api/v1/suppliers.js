@@ -154,7 +154,7 @@ router.post("/", async function (req, res, next) {
         {
           name: req.body.name,
           address: req.body.address,
-          description: req.body.description
+          description: req.body.description,
         },
         // Assign to a database transaction
         {
@@ -228,7 +228,7 @@ router.put("/:id", async function (req, res, next) {
           {
             name: req.body.name,
             address: req.body.address,
-            description: req.body.description
+            description: req.body.description,
           },
           // Assign to a database transaction
           {
@@ -335,7 +335,7 @@ router.get("/:id/products", async function (req, res, next) {
           model: Product,
           as: "products",
           where: {
-            supplierId: req.params.id
+            supplierId: req.params.id,
           },
           attributes: ["id", "description"],
         },

@@ -17,7 +17,13 @@ import { ValidationError } from "sequelize";
 const router = express.Router();
 
 // Import models
-import { Product, ProductCount, ProductSize, ProductType, Supplier } from "../../../models/models.js";
+import {
+  Product,
+  ProductCount,
+  ProductSize,
+  ProductType,
+  Supplier,
+} from "../../../models/models.js";
 
 // Import logger
 import logger from "../../../configs/logger.js";

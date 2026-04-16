@@ -13,10 +13,6 @@ const MovementSchema = {
     primaryKey: true,
     autoIncrement: true,
   },
-  movementType: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-  },
   applied: {
     type: Sequelize.BOOLEAN,
     allowNull: false,

@@ -25,6 +25,7 @@ import productRouter from "./api/v1/products.js";
 import productTypesRouter from "./api/v1/productTypes.js";
 import productSizeRouter from "./api/v1/productSizes.js";
 import supplierRouter from "./api/v1/suppliers.js";
+import movementRouter from "./api/v1/movements.js";
 
 // Create Express router
 const router = express.Router();
@@ -80,5 +81,6 @@ router.use("/v1/users", usersRouter);
 router.use("/v1/products", productRouter);
 router.use("/v1/product_types", productTypesRouter);
 router.use("/v1/product_sizes", productSizeRouter);
-router.use("/v1/suppliers", supplierRouter)
+router.use("/v1/suppliers", supplierRouter);
+router.use("/v1/movements", movementRouter);
 export default router;

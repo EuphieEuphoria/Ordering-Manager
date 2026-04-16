@@ -11,16 +11,31 @@ const ProductMovementSchema = {
   productID: {
     type: Sequelize.INTEGER,
     primaryKey: true,
-    references: { model: "Product", key: "id" },
+    references: { model: "products", key: "id" },
     onDelete: "cascade",
   },
   movementID: {
     type: Sequelize.INTEGER,
     primaryKey: true,
-    references: { model: "Movement", key: "id" },
+    references: { model: "movements", key: "id" },
     onDelete: "cascade",
   },
-  //amountChanged
+  movementType: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  amountChanged: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  createdAt: {
+    type: Sequelize.DATE,
+    allowNull: false,
+  },
+  updatedAt: {
+    type: Sequelize.DATE,
+    allowNull: false,
+  },
 };
 
 export default ProductMovementSchema;
