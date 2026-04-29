@@ -1,12 +1,12 @@
 /**
- * @file Products Router
+ * @file Movements Router
  * @author Lukas Courtney <lccourtney@ksu.edu>
  * @exports router an Express Router
  *
  * @swagger
  * tags:
- *   name: products
- *   description: Products Routes
+ *   name: Movements
+ *   description: Movements Routes
  */
 
 // Import libraries
@@ -19,7 +19,6 @@ const router = express.Router();
 // Import models
 import {
   Movement,
-  MovementType,
   ProductMovement,
 } from "../../../models/models.js";
 
@@ -47,7 +46,7 @@ router.use(roleBasedAuth("manage_users"));
  *   get:
  *     summary: movements list page
  *     description: gets all movements
- *     tags: [movements]
+ *     tags: [Movements]
  *     security:
  *       - bearerAuth:
  *         - 'manage_users'
@@ -75,6 +74,38 @@ router.get("/", async function (req, res, next) {
 
 /**
  * Get Movements between two dates
+ *
+ * @swagger
+ * /api/v1/movements/between:
+ *   get:
+ *     summary: get movements between dates
+ *     tags: [Movements]
+ *     security:
+ *       - bearerAuth:
+ *         - 'manage_users'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - start
+ *               - end
+ *             properties:
+ *               start:
+ *                 type: string
+ *                 format: date-time
+ *
+ *               end:
+ *                 type: string
+ *                 format: date-time
+ *           example:
+ *             - start: 2025-01-01T00:00:00.000Z
+ *             - end: 2025-01-31T23:59:59.000Z
+ *     responses:
+ *       200:
+ *         description: A list of movements between the specified dates
  */
 router.get("/between", async function (req, res, next) {
   try {
@@ -99,7 +130,7 @@ router.get("/between", async function (req, res, next) {
  * /api/v1/movements:
  *   post:
  *     summary: create a movement
- *     tags: [movements]
+ *     tags: [Movements]
  *     security:
  *       - bearerAuth:
  *         - 'manage_users'

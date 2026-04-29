@@ -29,6 +29,8 @@ import ProductMovementSchema from "./product_movement.js";
 import MovementTypeSchema from "./movement_types.js";
 import ProductSizeSchema from "./product_sizes.js";
 import SupplierSchema from "./suppliers.js";
+import OrderSchema from "./orders.js";
+import ProductOrderSchema from "./product_order.js";
 
 // Create User model
 const User = database.define(
@@ -189,6 +191,17 @@ const Movement = database.define(
   },
 );
 
+const Order = database.define(
+  //Model Name
+  "Order",
+  //Schema
+  OrderSchema,
+  //Other Options
+  {
+    tableName: "orders",
+  },
+)
+
 const ProductType = database.define(
   //Model Name
   "ProductType",
@@ -222,6 +235,17 @@ const ProductMovement = database.define(
   },
 );
 
+const ProductOrder = database.define(
+  //Model Name
+  "ProductOrder",
+  //Schema
+  ProductOrderSchema,
+  //Other Options
+  {
+    tableName: "product_orders"
+  },
+)
+
 const Supplier = database.define(
   //Model Name
   "Supplier",
@@ -254,6 +278,12 @@ Movement.hasMany(ProductMovement, {
   as: "product_movements",
 });
 
+ProductOrder.belongsTo(Product, { foreignKey: "productID", as: "product"});
+ProductOrder.belongsTo(Order, { foreignKey: "orderID", as: "order"});
+
+Product.hasMany(ProductOrder, { foreignKey: "productID", as: "product_orders"});
+Order.hasMany(ProductOrder, { foreignKey: "orderID", as: "product_orders"});
+
 Product.hasOne(ProductCount, { foreignKey: "productId", as: "product_counts" });
 ProductCount.belongsTo(Product, { foreignKey: "productId", as: "product" });
 
@@ -274,6 +304,8 @@ MovementType.hasMany(ProductMovement, {
   foreignKey: "movementType",
   as: "product_movements",
 });
+
+
 
 // Metadata.belongsToMany(Document, {
 //   through: MetadataDocument,
@@ -326,4 +358,6 @@ export {
   MovementType,
   ProductMovement,
   Supplier,
+  Order,
+  ProductOrder,
 };

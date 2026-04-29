@@ -13,7 +13,7 @@
 import express from "express";
 
 // Import middleware
-//import tokenMiddleware from "../middlewares/token.js";
+import tokenMiddleware from "../middlewares/token.js";
 
 //import logger
 import logger from "../configs/logger.js";
@@ -26,6 +26,7 @@ import productTypesRouter from "./api/v1/productTypes.js";
 import productSizeRouter from "./api/v1/productSizes.js";
 import supplierRouter from "./api/v1/suppliers.js";
 import movementRouter from "./api/v1/movements.js";
+import orderRouter from "./api/v1/orders.js"
 
 // Create Express router
 const router = express.Router();
@@ -70,10 +71,10 @@ router.get("/", function (req, res, next) {
 });
 
 // Use Token Middleware
-// router.use(tokenMiddleware);
-logger.error(
-  "AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER ",
-);
+router.use(tokenMiddleware);
+// logger.error(
+//   "AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER AUTHENTICATION OFF TURN THIS BACK ON LATER ",
+// );
 
 // Use v1 routers after API route
 router.use("/v1/roles", rolesRouter);
@@ -83,4 +84,5 @@ router.use("/v1/product_types", productTypesRouter);
 router.use("/v1/product_sizes", productSizeRouter);
 router.use("/v1/suppliers", supplierRouter);
 router.use("/v1/movements", movementRouter);
+router.use("/v1/orders", orderRouter)
 export default router;
