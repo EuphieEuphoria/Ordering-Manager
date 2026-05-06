@@ -42,7 +42,7 @@ import handleValidationError from "../../../utilities/handle-validation-error.js
 import sendSuccess from "../../../utilities/send-success.js";
 
 // Add Role Authorization to all routes
-router.use(roleBasedAuth("manage_users"));
+//router.use(roleBasedAuth("manage_users"));
 
 /**
  * Gets the list of movements
@@ -55,12 +55,12 @@ router.use(roleBasedAuth("manage_users"));
  *     tags: [Movements]
  *     security:
  *       - bearerAuth:
- *         - 'manage_users'
+ *         - 'view_movements'
  *     responses:
  *       200:
  *         description: A list of movements
  */
-router.get("/", async function (req, res, next) {
+router.get("/", roleBasedAuth("view_movements"), async function (req, res, next) {
   try {
     const movements = await Movement.findAll({
       include: [
@@ -121,7 +121,7 @@ router.get("/", async function (req, res, next) {
  *     tags: [Movements]
  *     security:
  *       - bearerAuth:
- *         - 'manage_users'
+ *         - 'view_movements'
  *     requestBody:
  *       required: true
  *       content:
@@ -146,7 +146,7 @@ router.get("/", async function (req, res, next) {
  *       200:
  *         description: A list of movements between the specified dates
  */
-router.get("/between", async function (req, res, next) {
+router.get("/between", roleBasedAuth("view_movements"), async function (req, res, next) {
   try {
     const movements = await Movement.findAll({
       where: {
@@ -172,7 +172,7 @@ router.get("/between", async function (req, res, next) {
  *     tags: [Movements]
  *     security:
  *       - bearerAuth:
- *         - 'manage_users'
+ *         - 'manage_movements'
  *     requestBody:
  *       required: true
  *       content:
@@ -211,8 +211,7 @@ router.get("/between", async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/ValidationError'
  */
-
-router.post("/", async function (req, res, next) {
+router.post("/", roleBasedAuth("manage_movements"), async function (req, res, next) {
   try {
     await database.transaction(async (t) => {
       const { movements } = req.body;

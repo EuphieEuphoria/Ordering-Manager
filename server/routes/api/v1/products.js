@@ -39,7 +39,7 @@ import handleValidationError from "../../../utilities/handle-validation-error.js
 import sendSuccess from "../../../utilities/send-success.js";
 
 // Add Role Authorization to all routes
-router.use(roleBasedAuth("manage_users"));
+//router.use(roleBasedAuth("view_products"));
 
 /**
  * Gets the list of products
@@ -56,7 +56,7 @@ router.use(roleBasedAuth("manage_users"));
  *     tags: [products]
  *     security:
  *       - bearerAuth:
- *         - 'manage_users'
+ *         - 'view_products'
  *     responses:
  *       200:
  *         description: A list of products
@@ -67,7 +67,7 @@ router.use(roleBasedAuth("manage_users"));
  *               items:
  *                 $ref: '#/components/schemas/Product'
  */
-router.get("/", async function (req, res, next) {
+router.get("/", roleBasedAuth("view_products"), async function (req, res, next) {
   try {
     const products = await Product.findAll({
       include: [
@@ -115,7 +115,7 @@ router.get("/", async function (req, res, next) {
  *     tags: [products]
  *     security:
  *       - bearerAuth:
- *         - 'manage_users'
+ *         - 'view_products'
  *     parameters:
  *       - in: path
  *         name: id
@@ -131,7 +131,7 @@ router.get("/", async function (req, res, next) {
  *             schema:
  *               $ref: '#/components/schemas/Product'
  */
-router.get("/:id", async function (req, res, next) {
+router.get("/:id", roleBasedAuth("view_products"), async function (req, res, next) {
   try {
     const product = await Product.findByPk(req.params.id, {
       include: [
@@ -183,7 +183,7 @@ router.get("/:id", async function (req, res, next) {
  *     tags: [products]
  *     security:
  *       - bearerAuth:
- *         - 'manage_users'
+ *         - 'manage_products'
  *     requestBody:
  *       description: product
  *       required: true
@@ -203,7 +203,7 @@ router.get("/:id", async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/ValidationError'
  */
-router.post("/", async function (req, res, next) {
+router.post("/", roleBasedAuth("manage_products"), async function (req, res, next) {
   try {
     // Use a database transaction to roll back if any errors are thrown
     await database.transaction(async (t) => {
@@ -259,7 +259,7 @@ router.post("/", async function (req, res, next) {
  *     tags: [products]
  *     security:
  *       - bearerAuth:
- *         - 'manage_users'
+ *         - 'manage_products'
  *     parameters:
  *       - in: path
  *         name: id
@@ -286,7 +286,7 @@ router.post("/", async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/ValidationError'
  */
-router.put("/:id", async function (req, res, next) {
+router.put("/:id", roleBasedAuth("manage_products"), async function (req, res, next) {
   try {
     const product = await Product.findByPk(req.params.id);
 
@@ -338,7 +338,7 @@ router.put("/:id", async function (req, res, next) {
  *     tags: [products]
  *     security:
  *       - bearerAuth:
- *         - 'manage_users'
+ *         - 'manage_products'
  *     parameters:
  *       - in: path
  *         name: id
@@ -350,7 +350,7 @@ router.put("/:id", async function (req, res, next) {
  *       200:
  *         $ref: '#/components/responses/Success'
  */
-router.delete("/:id", async function (req, res, next) {
+router.delete("/:id", roleBasedAuth("manage_products"), async function (req, res, next) {
   try {
     const product = await Product.findByPk(req.params.id);
 

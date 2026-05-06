@@ -47,7 +47,7 @@ import sendSuccess from "../../../utilities/send-success.js";
  *     tags: [suppliers]
  *     security:
  *       - bearerAuth:
- *         - 'manage_users'
+ *         - 'view_suppliers'
  *     responses:
  *       200:
  *         description: the list of suppliers
@@ -58,7 +58,7 @@ import sendSuccess from "../../../utilities/send-success.js";
  *               items:
  *                 $ref: '#/components/schemas/Supplier'
  */
-router.get("/", roleBasedAuth("manage_users"), async function (req, res, next) {
+router.get("/", roleBasedAuth("view_suppliers"), async function (req, res, next) {
   try {
     const suppliers = await Supplier.findAll();
     res.json(suppliers);
@@ -83,7 +83,7 @@ router.get("/", roleBasedAuth("manage_users"), async function (req, res, next) {
  *     tags: [suppliers]
  *     security:
  *       - bearerAuth:
- *         - 'manage_users'
+ *         - 'view_suppliers'
  *     parameters:
  *       - in: path
  *         name: id
@@ -99,7 +99,7 @@ router.get("/", roleBasedAuth("manage_users"), async function (req, res, next) {
  *             schema:
  *               $ref: '#/components/schemas/Supplier'
  */
-router.get("/:id", async function (req, res, next) {
+router.get("/:id", roleBasedAuth("view_suppliers"), async function (req, res, next) {
   try {
     const productType = await Supplier.findByPk(req.params.id, {});
     if (productType === null) {
@@ -127,7 +127,7 @@ router.get("/:id", async function (req, res, next) {
  *     tags: [suppliers]
  *     security:
  *       - bearerAuth:
- *         - 'manage_users'
+ *         - 'manage_suppliers'
  *     requestBody:
  *       description: supplier
  *       required: true
@@ -145,7 +145,7 @@ router.get("/:id", async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/ValidationError'
  */
-router.post("/", async function (req, res, next) {
+router.post("/", roleBasedAuth("manage_suppliers"), async function (req, res, next) {
   try {
     // Use a database transaction to roll back if any errors are thrown
     await database.transaction(async (t) => {
@@ -189,7 +189,7 @@ router.post("/", async function (req, res, next) {
  *     tags: [suppliers]
  *     security:
  *       - bearerAuth:
- *         - 'manage_users'
+ *         - 'manage_suppliers'
  *     parameters:
  *       - in: path
  *         name: id
@@ -214,7 +214,7 @@ router.post("/", async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/ValidationError'
  */
-router.put("/:id", async function (req, res, next) {
+router.put("/:id", roleBasedAuth("manage_suppliers"), async function (req, res, next) {
   try {
     const supplier = await Supplier.findByPk(req.params.id);
 
@@ -264,7 +264,7 @@ router.put("/:id", async function (req, res, next) {
  *     tags: [suppliers]
  *     security:
  *       - bearerAuth:
- *         - 'manage_users'
+ *         - 'manage_suppliers'
  *     parameters:
  *       - in: path
  *         name: id
@@ -276,7 +276,7 @@ router.put("/:id", async function (req, res, next) {
  *       200:
  *         $ref: '#/components/responses/Success'
  */
-router.delete("/:id", async function (req, res, next) {
+router.delete("/:id", roleBasedAuth("manage_suppliers"), async function (req, res, next) {
   try {
     const supplier = await Supplier.findByPk(req.params.id);
 
@@ -311,7 +311,7 @@ router.delete("/:id", async function (req, res, next) {
  *     tags: [suppliers]
  *     security:
  *       - bearerAuth:
- *         - 'manage_users'
+ *         - 'view_suppliers'
  *     parameters:
  *       - in: path
  *         name: id
@@ -327,7 +327,7 @@ router.delete("/:id", async function (req, res, next) {
  *             schema:
  *               $ref: '#/components/schemas/Supplier'
  */
-router.get("/:id/products", async function (req, res, next) {
+router.get("/:id/products", roleBasedAuth("view_suppliers"), async function (req, res, next) {
   try {
     const products = await Supplier.findByPk(req.params.id, {
       include: [

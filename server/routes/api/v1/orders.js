@@ -33,7 +33,7 @@ import handleValidationError from "../../../utilities/handle-validation-error.js
 import sendSuccess from "../../../utilities/send-success.js";
 
 // Add Role Authorization to all routes
-router.use(roleBasedAuth("manage_users"));
+//router.use(roleBasedAuth("manage_users"));
 
 /**
  * Gets the list of orders
@@ -46,12 +46,12 @@ router.use(roleBasedAuth("manage_users"));
  *     tags: [Orders]
  *     security:
  *       - bearerAuth:
- *         - 'manage_users'
+ *         - 'view_orders'
  *     responses:
  *       200:
  *         description: A list of orders
  */
-router.get("/", async function (req, res, next) {
+router.get("/", roleBasedAuth("view_orders"), async function (req, res, next) {
   try {
     const orders = await Order.findAll({
       include: [
@@ -107,7 +107,7 @@ router.get("/", async function (req, res, next) {
  *     tags: [Orders]
  *     security:
  *       - bearerAuth:
- *         - 'manage_users'
+ *         - 'manage_orders'
  *     requestBody:
  *       required: true
  *       content:
@@ -145,7 +145,7 @@ router.get("/", async function (req, res, next) {
  *         $ref: '#/components/responses/ValidationError'
  */
 
-router.post("/", async function (req, res, next) {
+router.post("/", roleBasedAuth("manage_orders"), async function (req, res, next) {
   try {
     await database.transaction(async (t) => {
       const { orders } = req.body;

@@ -58,6 +58,12 @@ const roles = [
     createdAt: now,
     updatedAt: now,
   },
+  {
+    id: 9,
+    role: "view_suppliers",
+    createdAt: now,
+    updatedAt: now,
+  }
 ];
 
 const user_roles = [
@@ -82,12 +88,44 @@ const user_roles = [
     role_id: 5,
   },
   {
+    user_id: 1,
+    role_id: 6,
+  },
+  {
+    user_id: 1,
+    role_id: 7,
+  },
+  {
+    user_id: 1,
+    role_id: 8,
+  },
+  {
+    user_id: 1,
+    role_id: 9,
+  },
+  {
     user_id: 2,
     role_id: 3,
   },
   {
     user_id: 2,
     role_id: 4,
+  },
+  {
+    user_id: 2,
+    role_id: 6,
+  },
+  {
+    user_id: 2,
+    role_id: 7,
+  },
+  {
+    user_id: 2,
+    role_id: 8,
+  },
+  {
+    user_id: 2,
+    role_id: 9,
   },
   {
     user_id: 3,

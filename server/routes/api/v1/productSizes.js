@@ -47,7 +47,7 @@ import sendSuccess from "../../../utilities/send-success.js";
  *     tags: [product_sizes]
  *     security:
  *       - bearerAuth:
- *         - 'manage_users'
+ *         - 'view_products'
  *     responses:
  *       200:
  *         description: the list of product_sizes
@@ -58,7 +58,7 @@ import sendSuccess from "../../../utilities/send-success.js";
  *               items:
  *                 $ref: '#/components/schemas/ProductSize'
  */
-router.get("/", roleBasedAuth("manage_users"), async function (req, res, next) {
+router.get("/", roleBasedAuth("view_products"), async function (req, res, next) {
   try {
     const product_sizes = await ProductSize.findAll();
     res.json(product_sizes);

@@ -138,10 +138,11 @@ const confirmDelete = function (id) {
         </span>
       </template>
     </Column>
-    <Column header="Actions" style="min-width: 8rem">
+    <Column v-if="tokenStore.has_role('manage_products')" header="Actions" style="min-width: 8rem">
       <template #body="slotProps">
         <div class="flex gap-2">
           <Button
+            v-if="tokenStore.has_role('manage_products')"
             icon="pi pi-pencil"
             outlined
             rounded
@@ -149,6 +150,7 @@ const confirmDelete = function (id) {
             v-tooltip.bottom="'Edit'"
           />
           <Button
+            v-if="tokenStore.has_role('manage_products')"
             icon="pi pi-trash"
             outlined
             rounded

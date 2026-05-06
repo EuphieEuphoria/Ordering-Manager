@@ -40,7 +40,7 @@ import roleBasedAuth from "../../../middlewares/authorized-roles.js";
  *     tags: [movement_types]
  *     security:
  *       - bearerAuth:
- *         - 'manage_users'
+ *         - 'view_movements'
  *     responses:
  *       200:
  *         description: the list of movement_types
@@ -51,7 +51,7 @@ import roleBasedAuth from "../../../middlewares/authorized-roles.js";
  *               items:
  *                 $ref: '#/components/schemas/MovementType'
  */
-router.get("/", roleBasedAuth("manage_users"), async function (req, res, next) {
+router.get("/", roleBasedAuth("view_movements"), async function (req, res, next) {
   try {
     const movement_types = await MovementType.findAll();
     res.json(movement_types);
@@ -92,7 +92,7 @@ router.get("/", roleBasedAuth("manage_users"), async function (req, res, next) {
  *             schema:
  *               $ref: '#/components/schemas/MovementType'
  */
-router.get("/:id", async function (req, res, next) {
+router.get("/:id", roleBasedAuth("view_movements"), async function (req, res, next) {
   try {
     const movementType = await MovementType.findByPk(req.params.id, {});
     if (movementType === null) {
