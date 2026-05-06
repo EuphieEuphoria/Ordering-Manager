@@ -1,6 +1,6 @@
 <script setup>
 /**
- * @file Users List Component
+ * @file Products List Component
  * @author Lukas Courtney <lccourtney@ksu.edu>
  */
 
@@ -8,8 +8,7 @@
 import { ref } from 'vue'
 import { api } from '@/configs/api'
 import { formatDistance } from 'date-fns'
-import { DataTable, Column, IconField, InputIcon, InputText, MultiSelect, Button } from 'primevue'
-import { FilterMatchMode, FilterService } from '@primevue/core/api'
+import { DataTable, Column, Button } from 'primevue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 import { useToast } from 'primevue/usetoast'
@@ -17,52 +16,27 @@ const toast = useToast()
 import { useConfirm } from 'primevue'
 const confirm = useConfirm()
 
+// Stores
+import { useTokenStore } from '@/stores/Token'
+const tokenStore = useTokenStore()
+
 // Create Reactive State
-const users = ref([])
-const roles = ref([])
+const products = ref([])
 
-// Load Users
+// Load Products
 api
-  .get('/api/v1/users')
-  .then(function (response) {
-    users.value = response.data
+  .get('/api/v1/products')
+  .then((response) => {
+    products.value = response.data
   })
-  .catch(function (error) {
+  .catch((error) => {
     console.log(error)
   })
 
-// Load Roles
-api
-  .get('/api/v1/roles')
-  .then(function (response) {
-    roles.value = response.data
-  })
-  .catch(function (error) {
-    console.log(error)
-  })
-
-// Custom Filter
-FilterService.register('filterArrayOfObjectsById', (targetArray, sourceArray) => {
-  if (!sourceArray || sourceArray.length == 0) {
-    return true
-  }
-  let found = true
-  sourceArray.forEach((s) => {
-    found = found && targetArray.some((o) => o.id === s.id)
-  })
-  return found
-})
-
-// Setup Filters
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  roles: { value: null, matchMode: 'filterArrayOfObjectsById' },
-})
-
-// Delete User
-const deleteUser = function (id) {
+// Delete Product
+const deleteProduct = function (id) {
   api
-    .delete('/api/v1/users/' + id)
+    .delete('/api/v1/products/' + id)
     .then(function (response) {
       if (response.status === 200) {
         toast.add({
@@ -72,8 +46,8 @@ const deleteUser = function (id) {
           life: 5000,
         })
         // Remove that element from the reactive array
-        users.value.splice(
-          users.value.findIndex((u) => u.id == id),
+        products.value.splice(
+          products.value.findIndex((p) => p.id == id),
           1,
         )
       }
@@ -86,8 +60,8 @@ const deleteUser = function (id) {
 // Confirmation Dialog
 const confirmDelete = function (id) {
   confirm.require({
-    message: 'Are you sure you want to delete this user?',
-    header: 'Delete User',
+    message: 'Are you sure you want to delete this product?',
+    header: 'Delete Product',
     icon: 'pi pi-exclamation-triangle',
     rejectProps: {
       label: 'Cancel',
@@ -99,7 +73,7 @@ const confirmDelete = function (id) {
       severity: 'danger',
     },
     accept: () => {
-      deleteUser(id)
+      deleteProduct(id)
     },
   })
 }
@@ -107,49 +81,48 @@ const confirmDelete = function (id) {
 
 <template>
   <DataTable
-    :value="users"
-    v-model:filters="filters"
-    :globalFilterFields="['username']"
-    filterDisplay="menu"
-    sortField="username"
+    :value="products"
+    sortField="id"
     :sortOrder="1"
   >
     <template #header>
       <div class="flex justify-between">
         <Button
-          label="New User"
+          v-if="tokenStore.has_role('manage_products')"
+          label="New Product"
           icon="pi pi-user-plus"
           severity="success"
-          @click="router.push({ name: 'newuser' })"
+          @click="router.push({ name: 'newproduct' })"
         />
-        <IconField>
-          <InputIcon>
-            <i class="pi pi-search" />
-          </InputIcon>
-          <InputText v-model="filters['global'].value" placeholder="Keyword Search" />
-        </IconField>
       </div>
     </template>
-    <Column field="username" header="Username" sortable />
-    <Column filterField="roles" :showFilterMatchModes="false" header="Roles">
-      <template #body="{ data }">
-        <div class="flex gap-2">
-          <RoleChip v-for="role in data.roles" :key="role.id" :role="role" />
-        </div>
-      </template>
-      <template #filter="{ filterModel }">
-        <MultiSelect
-          v-model="filterModel.value"
-          :options="roles"
-          optionLabel="role"
-          placeholder="Any"
-        >
-          <template #option="slotProps">
-            <RoleChip :role="slotProps.option" />
-          </template>
-        </MultiSelect>
-      </template>
+
+    <Column field="id" header="ID" sortable>
     </Column>
+
+    <Column field="description" header="Description" sortable>
+    </Column>
+
+
+    <Column field="suppliers.name" header="Supplier" sortable >
+    </Column>
+
+
+    <Column field="product_types.type" header="Type" sortable>
+    </Column>
+
+
+    <Column field="product_sizes.commonName" header="Size" sortable>
+    </Column>
+
+
+    <Column field="caseSize" header="Case Size" sortable>
+    </Column>
+
+
+    <Column field="product_counts.quantity" header="Quantity" sortable>
+    </Column>
+
     <Column field="createdAt" header="Created" sortable>
       <template #body="{ data }">
         <span v-tooltip.bottom="new Date(data.createdAt).toLocaleString()">
@@ -157,6 +130,7 @@ const confirmDelete = function (id) {
         </span>
       </template>
     </Column>
+
     <Column field="updatedAt" header="Updated" sortable>
       <template #body="{ data }">
         <span v-tooltip.bottom="new Date(data.updatedAt).toLocaleString()">
@@ -171,7 +145,7 @@ const confirmDelete = function (id) {
             icon="pi pi-pencil"
             outlined
             rounded
-            @click="router.push({ name: 'edituser', params: { id: slotProps.data.id } })"
+            @click="router.push({ name: 'editproduct', params: { id: slotProps.data.id } })"
             v-tooltip.bottom="'Edit'"
           />
           <Button

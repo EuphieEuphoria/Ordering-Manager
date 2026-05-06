@@ -20,6 +20,12 @@ const router = express.Router();
 import {
   Movement,
   ProductMovement,
+  Product,
+  ProductCount,
+  ProductSize,
+  ProductType,
+  Supplier,
+  MovementType,
 } from "../../../models/models.js";
 
 // Import logger
@@ -61,6 +67,39 @@ router.get("/", async function (req, res, next) {
         {
           model: ProductMovement,
           as: "product_movements",
+          include: [
+            {
+              model: Product,
+              as: "product",
+              include: [
+                {
+                  model: ProductCount,
+                  as: "product_counts",
+                  attributes: ["id", "quantity"],
+                },
+                {
+                  model: ProductType,
+                  as: "product_types",
+                  attributes: ["id", "type"],
+                },
+                {
+                  model: ProductSize,
+                  as: "product_sizes",
+                  attributes: ["id", "ounces", "commonName"],
+                },
+                {
+                  model: Supplier,
+                  as: "suppliers",
+                  attributes: ["id", "name"],
+                },
+              ],
+            },
+            {
+              model: MovementType,
+              as: "movement_types",
+              attributes: ["id", "type"],
+            }
+          ],
         },
       ],
     });
@@ -183,9 +222,6 @@ router.post("/", async function (req, res, next) {
       }
 
       const container = await Movement.create(
-        {
-          applied: false,
-        },
         { transaction: t },
       );
 
@@ -200,6 +236,19 @@ router.post("/", async function (req, res, next) {
         transaction: t,
       });
 
+      for (const m of movements) {
+        const productCount = await ProductCount.findOne({
+          where: { productID: m.productId },
+          transaction: t,
+        });
+
+        const newQuantity = Number(productCount.quantity) + Number(m.amountChanged);
+
+        await productCount.update(
+          { quantity: newQuantity },
+          { transaction: t }
+        );
+      }
       sendSuccess("Movement container saved!", container.id, 201, res);
     });
   } catch (error) {

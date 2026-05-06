@@ -18,31 +18,31 @@ const roleBasedAuth = (...roles) => {
     // logger.error(
     //   "------------------------------ROLE BASED AUTH IS DISABLED------------------------------",
     // );
-    roles;
-    // return next();
-    logger.debug("Route requires roles: " + roles);
-    logger.debug(
-      "User " +
-        req.token.username +
-        " has roles: " +
-        req.token.roles.map((r) => r.role).join(","),
-    );
-    logger.debug(req.token);
-    let match = false;
-    // loop through each role given
-    roles.forEach((role) => {
-      // if the user has that role, then they can proceed
-      if (req.token.roles.some((r) => r.role === role)) {
-        logger.debug("Role match!");
-        match = true;
-        return next();
+    // roles;
+    //return next();
+      logger.debug("Route requires roles: " + roles);
+      logger.debug(
+        "User " +
+          req.token.username +
+          " has roles: " +
+          req.token.roles.map((r) => r.role).join(","),
+      );
+      logger.debug(req.token);
+      let match = false;
+      // loop through each role given
+      roles.forEach((role) => {
+        // if the user has that role, then they can proceed
+        if (req.token.roles.some((r) => r.role === role)) {
+          logger.debug("Role match!");
+          match = true;
+          return next();
+        }
+      });
+      if (!match) {
+        // if no roles match, send an unauthenticated response
+        logger.debug("No role match!");
+        return res.status(401).send();
       }
-    });
-    if (!match) {
-      // if no roles match, send an unauthenticated response
-      logger.debug("No role match!");
-      return res.status(401).send();
-    }
   };
 };
 

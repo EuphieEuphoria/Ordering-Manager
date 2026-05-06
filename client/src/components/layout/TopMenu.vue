@@ -50,6 +50,38 @@ const items = ref([
     },
     roles: ['manage_users'],
   },
+  {
+    label: 'Products',
+    icon: 'pi pi-users',
+    command: () => {
+      router.push({ name: 'products' })
+    },
+    roles: ['view_products', 'manage_products'],
+  },
+  {
+    label: 'Suppliers',
+    icon: 'pi pi-users',
+    command: () => {
+      router.push({ name: 'suppliers' })
+    },
+    roles: ['view_suppliers', 'manage_suppliers'],
+  },
+  {
+    label: 'Movements',
+    icon: 'pi pi-users',
+    command: () => {
+      router.push({ name: 'movements' })
+    },
+    roles: ['view_movements', 'manage_movements']
+  },
+  {
+    label: 'Orders',
+    icon: 'pi pi-users',
+    command: () => {
+      router.push({ name: 'orders' })
+    },
+    roles: ['view_orders', 'manage_orders']
+  },
 ])
 
 const visible_items = computed(() => {

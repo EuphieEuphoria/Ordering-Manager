@@ -17,10 +17,7 @@ import { ValidationError } from "sequelize";
 const router = express.Router();
 
 // Import models
-import {
-  Order,
-  ProductOrder,
-} from "../../../models/models.js";
+import { Order, ProductOrder, ProductCount, Product, ProductSize, ProductType, Supplier, } from "../../../models/models.js";
 
 // Import logger
 import logger from "../../../configs/logger.js";
@@ -61,6 +58,34 @@ router.get("/", async function (req, res, next) {
         {
           model: ProductOrder,
           as: "product_orders",
+          include: [
+            {
+              model: Product,
+              as: "product",
+              include: [
+                {
+                  model: ProductCount,
+                  as: "product_counts",
+                  attributes: ["id", "quantity"],
+                },
+                {
+                  model: ProductType,
+                  as: "product_types",
+                  attributes: ["id", "type"],
+                },
+                {
+                  model: ProductSize,
+                  as: "product_sizes",
+                  attributes: ["id", "ounces", "commonName"],
+                },
+                {
+                  model: Supplier,
+                  as: "suppliers",
+                  attributes: ["id", "name"],
+                },
+              ],
+            },
+          ],
         },
       ],
     });
@@ -71,7 +96,6 @@ router.get("/", async function (req, res, next) {
     res.status(500).end();
   }
 });
-
 
 /**
  * Create a order
@@ -131,9 +155,6 @@ router.post("/", async function (req, res, next) {
       }
 
       const container = await Order.create(
-        {
-          applied: false,
-        },
         { transaction: t },
       );
 
@@ -146,6 +167,20 @@ router.post("/", async function (req, res, next) {
       await ProductOrder.bulkCreate(orderRows, {
         transaction: t,
       });
+
+      for (const o of orders) {
+        const productCount = await ProductCount.findOne({
+          where: { productID: o.productId },
+          transaction: t,
+        });
+
+        const newQuantity = Number(productCount.quantity) + Number(o.quantityOrdered);
+
+        await productCount.update(
+          { quantity: newQuantity },
+          { transaction: t }
+        );
+      }
 
       sendSuccess("Order container saved!", container.id, 201, res);
     });

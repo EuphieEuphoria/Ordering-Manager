@@ -131,7 +131,9 @@ const confirmDelete = function (id) {
         </IconField>
       </div>
     </template>
+
     <Column field="username" header="Username" sortable />
+
     <Column filterField="roles" :showFilterMatchModes="false" header="Roles">
       <template #body="{ data }">
         <div class="flex gap-2">

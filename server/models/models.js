@@ -70,82 +70,9 @@ const UserRole = database.define(
   },
 );
 
-// // Create Community Model
-// const Community = database.define(
-//   // Model Name
-//   "Community",
-//   // Schema
-//   CommunitySchema,
-//   // Other options
-//   {
-//     tableName: "communities",
-//   },
-// );
+//NEW MODELS------------------------------------------------------------------------
 
-// // Create County Model
-// const County = database.define(
-//   // Model Name
-//   "County",
-//   // Schema
-//   CountySchema,
-//   // Other options
-//   {
-//     tableName: "counties",
-//   },
-// );
-
-// // Create Document Model
-// const Document = database.define(
-//   // Model Name
-//   "Document",
-//   // Schema
-//   DocumentSchema,
-//   // Other options
-//   {
-//     tableName: "documents",
-//   },
-// );
-
-// // Create Metadata Model
-// const Metadata = database.define(
-//   // Model Name
-//   "Metadata",
-//   // Schema
-//   MetadataSchema,
-//   // Other options
-//   {
-//     tableName: "metadata",
-//   },
-// );
-
-// // Create MetadataDocument Model
-// const MetadataDocument = database.define(
-//   // Model Name
-//   "MetadataDocument",
-//   // Schema
-//   MetadataDocumentSchema,
-//   // Other options
-//   {
-//     tableName: "metadata_documents",
-//     timestamps: false,
-//     underscored: true,
-//   },
-// );
-
-// // Create MetadataCommunity Model
-// const MetadataCommunity = database.define(
-//   // Model Name
-//   "MetadataCommunity",
-//   // Schema
-//   MetadataCommunitySchema,
-//   // Other options
-//   {
-//     tableName: "metadata_communities",
-//     timestamps: false,
-//     underscored: true,
-//   },
-// );
-
+//Products
 // Create Product Model
 const Product = database.define(
   //Model Name
@@ -158,50 +85,7 @@ const Product = database.define(
   },
 );
 
-const MovementType = database.define(
-  //Model Name
-  "MovementType",
-  //Schema
-  MovementTypeSchema,
-  //Other Options
-  {
-    tableName: "movement_types",
-  },
-);
-
-const ProductCount = database.define(
-  //Model Name
-  "ProductCount",
-  //Schema
-  ProductCountSchema,
-  //Other Options
-  {
-    tableName: "product_counts",
-  },
-);
-
-const Movement = database.define(
-  //Model Name
-  "Movement",
-  //Schema
-  MovementSchema,
-  //Other Options
-  {
-    tableName: "movements",
-  },
-);
-
-const Order = database.define(
-  //Model Name
-  "Order",
-  //Schema
-  OrderSchema,
-  //Other Options
-  {
-    tableName: "orders",
-  },
-)
-
+// Create ProductType Model
 const ProductType = database.define(
   //Model Name
   "ProductType",
@@ -213,6 +97,7 @@ const ProductType = database.define(
   },
 );
 
+// Create ProductSize Model
 const ProductSize = database.define(
   //Model Name
   "ProductSize",
@@ -224,6 +109,44 @@ const ProductSize = database.define(
   },
 );
 
+// Create ProductCount Model
+const ProductCount = database.define(
+  //Model Name
+  "ProductCount",
+  //Schema
+  ProductCountSchema,
+  //Other Options
+  {
+    tableName: "product_counts",
+  },
+);
+
+//Movmements
+// Create Movement Model
+const Movement = database.define(
+  //Model Name
+  "Movement",
+  //Schema
+  MovementSchema,
+  //Other Options
+  {
+    tableName: "movements",
+  },
+);
+
+// Create MovementType Model
+const MovementType = database.define(
+  //Model Name
+  "MovementType",
+  //Schema
+  MovementTypeSchema,
+  //Other Options
+  {
+    tableName: "movement_types",
+  },
+);
+
+// Create ProductMovement Model
 const ProductMovement = database.define(
   //Model Name
   "ProductMovement",
@@ -235,6 +158,20 @@ const ProductMovement = database.define(
   },
 );
 
+//Orders
+// Create Order Model
+const Order = database.define(
+  //Model Name
+  "Order",
+  //Schema
+  OrderSchema,
+  //Other Options
+  {
+    tableName: "orders",
+  },
+);
+
+// Create Order Model
 const ProductOrder = database.define(
   //Model Name
   "ProductOrder",
@@ -242,10 +179,11 @@ const ProductOrder = database.define(
   ProductOrderSchema,
   //Other Options
   {
-    tableName: "product_orders"
+    tableName: "product_orders",
   },
-)
+);
 
+// Create Supplier Model
 const Supplier = database.define(
   //Model Name
   "Supplier",
@@ -257,93 +195,42 @@ const Supplier = database.define(
   },
 );
 
+//Associations ----------------------------------------------------------------------------------------------------------------------
+
 // Define Associations
 Role.belongsToMany(User, { through: UserRole, unique: false, as: "users" });
 User.belongsToMany(Role, { through: UserRole, unique: false, as: "roles" });
 
-ProductMovement.belongsTo(Product, { foreignKey: "productID", as: "product" });
-
-ProductMovement.belongsTo(Movement, {
-  foreignKey: "movementID",
-  as: "movement",
-});
-
-Product.hasMany(ProductMovement, {
-  foreignKey: "productID",
-  as: "product_movements",
-});
-
-Movement.hasMany(ProductMovement, {
-  foreignKey: "movementID",
-  as: "product_movements",
-});
-
-ProductOrder.belongsTo(Product, { foreignKey: "productID", as: "product"});
-ProductOrder.belongsTo(Order, { foreignKey: "orderID", as: "order"});
-
-Product.hasMany(ProductOrder, { foreignKey: "productID", as: "product_orders"});
-Order.hasMany(ProductOrder, { foreignKey: "orderID", as: "product_orders"});
-
-Product.hasOne(ProductCount, { foreignKey: "productId", as: "product_counts" });
-ProductCount.belongsTo(Product, { foreignKey: "productId", as: "product" });
-
+//Products
 Product.belongsTo(ProductType, { foreignKey: "typeId", as: "product_types" });
 ProductType.hasMany(Product, { foreignKey: "typeId", as: "products" });
 
 Product.belongsTo(ProductSize, { foreignKey: "sizeId", as: "product_sizes" });
 ProductSize.hasMany(Product, { foreignKey: "sizeId", as: "products" });
 
+Product.hasOne(ProductCount, { foreignKey: "productId", as: "product_counts" });
+ProductCount.belongsTo(Product, { foreignKey: "productId", as: "product" });
+
 Product.belongsTo(Supplier, { foreignKey: "supplierId", as: "suppliers" });
 Supplier.hasMany(Product, { foreignKey: "supplierId", as: "products" });
 
-ProductMovement.belongsTo(MovementType, {
-  foreignKey: "movementType",
-  as: "movement_types",
-});
-MovementType.hasMany(ProductMovement, {
-  foreignKey: "movementType",
-  as: "product_movements",
-});
+//Movements
+Movement.hasMany(ProductMovement, { foreignKey: "movementID", as: "product_movements" });
+ProductMovement.belongsTo(Movement, { foreignKey: "movementID", as: "movement" });
 
+Product.hasMany(ProductMovement, { foreignKey: "productID", as: "product_movements" });
+ProductMovement.belongsTo(Product, { foreignKey: "productID", as: "product" });
 
+ProductMovement.belongsTo(MovementType, { foreignKey: "movementType", as: "movement_types" });
+MovementType.hasMany(ProductMovement, { foreignKey: "movementType", as: "product_movements" });
 
-// Metadata.belongsToMany(Document, {
-//   through: MetadataDocument,
-//   unique: false,
-//   foreignKey: "metadata_id",
-//   as: "documents",
-// });
-// Document.belongsToMany(Metadata, {
-//   through: MetadataDocument,
-//   unique: false,
-//   foreignKey: "document_id",
-//   as: "metadata",
-// });
+//Orders
+Product.hasMany(ProductOrder, { foreignKey: "productID", as: "product_orders" });
+ProductOrder.belongsTo(Product, { foreignKey: "productID", as: "product" });
 
-// Metadata.belongsToMany(Community, {
-//   through: MetadataCommunity,
-//   unique: false,
-//   foreignKey: "metadata_id",
-//   as: "communities",
-// });
-// Community.belongsToMany(Metadata, {
-//   through: MetadataCommunity,
-//   unique: false,
-//   foreignKey: "community_id",
-//   as: "metadata",
-// });
+Order.hasMany(ProductOrder, { foreignKey: "orderID", as: "product_orders" });
+ProductOrder.belongsTo(Order, { foreignKey: "orderID", as: "order" });
 
-// User.hasMany(Metadata, { foreignKey: "owner_user_id", as: "metadata" });
-// Metadata.belongsTo(User, { foreignKey: "owner_user_id", as: "owner" });
-
-// User.hasMany(Community, { foreignKey: "owner_user_id", as: "communities" });
-// Community.belongsTo(User, {
-//   foreignKey: "owner_user_id",
-//   as: "owner",
-// });
-
-// County.hasMany(Community, { foreignKey: "county_id", as: "communities" });
-// Community.belongsTo(County, { foreignKey: "county_id", as: "county" });
 
 export {
   User,
@@ -357,7 +244,7 @@ export {
   Movement,
   MovementType,
   ProductMovement,
-  Supplier,
   Order,
   ProductOrder,
+  Supplier,
 };

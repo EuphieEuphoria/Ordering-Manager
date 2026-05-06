@@ -20,10 +20,6 @@ export async function up({ context: queryInterface }) {
       primaryKey: true,
       autoIncrement: true,
     },
-    applied: {
-      type: Sequelize.BOOLEAN,
-      allowNull: false,
-    },
     createdAt: {
       type: Sequelize.DATE,
       allowNull: false,

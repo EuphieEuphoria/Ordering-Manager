@@ -7,9 +7,9 @@
 // Import Libraries
 import { ref } from 'vue'
 import { api } from '@/configs/api'
-import { Button } from 'primevue'
+import { Button, Select } from 'primevue'
 import TextField from '../forms/TextField.vue'
-import AutoCompleteMultipleField from '../forms/AutoCompleteMultipleField.vue'
+//import AutoCompleteMultipleField from '../forms/AutoCompleteMultipleField.vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 import { useToast } from 'primevue/usetoast'
@@ -23,6 +23,9 @@ const props = defineProps({
 
 // Declare State
 const product = ref({})
+const suppliers = ref([])
+const sizes = ref([])
+const types = ref([])
 const errors = ref([])
 
 // Load Products
@@ -41,6 +44,37 @@ if (props.id) {
     productname: '',
   }
 }
+
+//Load Suppliers
+api
+  .get('/api/v1/suppliers')
+  .then(function (response) {
+    suppliers.value = response.data
+  })
+  .catch(function (error) {
+    console.log(error)
+  })
+
+//Load Sizes
+api
+  .get('/api/v1/product_sizes')
+  .then(function (response) {
+    sizes.value = response.data
+  })
+  .catch(function (error) {
+    console.log(error)
+  })
+
+//Load Types
+api
+  .get('/api/v1/product_types')
+  .then(function (response) {
+    types.value = response.data
+  })
+  .catch(function (error) {
+    console.log(error)
+  })
+
 
 // Save Product
 const save = function () {
@@ -86,23 +120,52 @@ const save = function () {
 <template>
   <div class="flex flex-col gap-3 max-w-xl justify-items-center">
     <h1 class="text-xl text-center m-1">{{ props.id ? 'Edit Product' : 'New Product' }}</h1>
+    <Select
+      v-model="product.supplierId"
+      :options="suppliers"
+      optionLabel="name"
+      optionValue="id"
+      placeholder="Select Supplier"
+      class="w-full"
+      :class="{ 'p-invalid': errors.some(e => e.path === 'supplierId') }"
+      />
+    <Select
+      v-model="product.typeId"
+      :options="types"
+      optionLabel="type"
+      optionValue="id"
+      placeholder="Select Type"
+      class="w-full"
+      :class="{ 'p-invalid': errors.some(e => e.path === 'typeId') }"
+      />
+    <Select
+      v-model="product.sizeId"
+      :options="sizes"
+      optionLabel="commonName"
+      optionValue="id"
+      placeholder="Select Size"
+      class="w-full"
+      :class="{ 'p-invalid': errors.some(e => e.path === 'sizeId') }"
+      />
     <TextField
-      v-model="product.productname"
-      field="productname"
-      label="Productname"
-      icon="pi pi-product"
+      v-model="product.caseSize"
+      field="caseSize"
+      label="Case Size"
+      icon="pi pi-box"
       :errors="errors"
     />
-    <AutoCompleteMultipleField
-      v-model="product.roles"
-      field="roles"
-      label="Roles"
-      icon="pi pi-id-card"
+    <TextField
+      v-model="product.description"
+      field="description"
+      label="Description"
+      icon="pi pi-align-left"
       :errors="errors"
-      :values="roles"
-      valueLabel="role"
     />
     <Button severity="success" @click="save" label="Save" />
-    <Button severity="secondary" @click="router.push({ name: 'products' })" label="Cancel" />
+    <Button
+      severity="secondary"
+      @click="router.push({ name: 'products' })"
+      label="Cancel"
+    />
   </div>
 </template>

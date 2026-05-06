@@ -82,6 +82,55 @@ const router = createRouter({
       component: () => import('../views/UsersEditView.vue'),
       beforeEnter: requireRoles('manage_users'),
     },
+    {
+      path: '/products',
+      name: 'products',
+      component: () => import('../views/ProductListView.vue'),
+      beforeEnter: requireRoles('view_products', 'manage_products'),
+    },
+    {
+      path: '/products/new',
+      name: 'newproduct',
+      component: () => import('../views/ProductEditView.vue'),
+      beforeEnter: requireRoles('manage_products'),
+    },
+    {
+      path: '/products/:id/edit',
+      name: 'editproduct',
+      component: () => import('../views/ProductEditView.vue'),
+      beforeEnter: requireRoles('manage_products'),
+      props: true,
+    },
+    {
+      path: '/suppliers',
+      name: 'suppliers',
+      component: () => import('../views/SupplierListView.vue'),
+      beforeEnter: requireRoles('manage_suppliers', 'view_suppliers'),
+    },
+    {
+      path: '/movements',
+      name: 'movements',
+      component: () => import('../views/MovementListView.vue'),
+      beforeEnter: requireRoles('view_movements', 'manage_movements'),
+    },
+    {
+      path: '/movements/new',
+      name: 'newmovement',
+      component: () => import('../views/MovementEditView.vue'),
+      beforeEnter: requireRoles('manage_movements'),
+    },
+    {
+      path: '/orders',
+      name: 'orders',
+      component: () => import('../views/OrderListView.vue'),
+      beforeEnter: requireRoles('view_orders', 'manage_orders'),
+    },
+    {
+      path: '/orders/new',
+      name: 'neworder',
+      component: () => import('../views/OrderEditView.vue'),
+      beforeEnter: requireRoles('manage_orders'),
+    }
   ],
 })
 

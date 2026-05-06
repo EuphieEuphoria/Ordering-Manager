@@ -9,7 +9,6 @@
 const now = new Date().toISOString().slice(0, 23).replace("T", " ") + " +00:00";
 
 // Array of objects to add to the database
-// Array of objects to add to the database
 const users = [
   {
     id: 1,
@@ -19,18 +18,12 @@ const users = [
   },
   {
     id: 2,
-    username: "contributor",
-    createdAt: now,
-    updatedAt: now,
-  },
-  {
-    id: 3,
     username: "manager",
     createdAt: now,
     updatedAt: now,
   },
   {
-    id: 4,
+    id: 3,
     username: "user",
     createdAt: now,
     updatedAt: now,

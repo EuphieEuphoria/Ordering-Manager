@@ -20,28 +20,36 @@ const roles = {
     icon: 'pi pi-user-edit',
   },
   2: {
-    name: 'Manage Documents',
+    name: 'Manage Products',
     icon: 'pi pi-pen-to-square',
   },
   3: {
-    name: 'Add Documents',
+    name: 'Manage Orders',
     icon: 'pi pi-file-plus',
   },
   4: {
-    name: 'Manage Communities',
+    name: 'Manage Movements',
     icon: 'pi pi-pencil',
   },
   5: {
-    name: 'Add Communities',
+    name: 'Manage Suppliers',
     icon: 'pi pi-plus-circle',
   },
   6: {
-    name: 'View Documents',
+    name: 'View Products',
     icon: 'pi pi-file',
   },
   7: {
     name: 'View Communities',
     icon: 'pi pi-building-columns',
+  },
+  8: {
+    name: 'View Movements',
+    icon: 'pi pi-file',
+  },
+  9: {
+    name: 'View Orders',
+    icon: 'pi pi-file',
   },
 }
 </script>
